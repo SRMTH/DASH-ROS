@@ -1,0 +1,4 @@
+<launch>
+  <node pkg="dash_ros" name="publisher" type="Dash-img.py" output="screen"/>
+  <node pkg="dash_ros" name="subscriber" type="rMinus3Race.py" ouptut="screen"/>
+</launch>
