@@ -10,7 +10,7 @@ from bluedot import BlueDot
 import rospy
 from std_msgs.msg import String
 import dynamixel
-
+import os
 #--------------------------------------------------------------OFFSETS------------------------------------------------------------------------------
 # darwin = {1: 90, 2: -90, 3: 67.5, 4: -67.5, 7: 45, 8: -10, 9: 'i', 10: 'i', 13: 'i', 14: 'i', 17: 'i', 18: 'i'}
 
@@ -21,7 +21,7 @@ abmath = {11: 7, 12: -5}
 hand = {5: 60, 6: -60}
 #---------------------------------------------------------------------------------------------------------------------------------------------------
 
-path = "/home/piyush/catkin_ws/src/dash_ros/inc/super.json"
+path = os.path.dirname(os.getcwd()) + "/catkin_ws/src/dash_ros/inc/super.json"
 
 class Dynamixel(object) :
 	def __init__(self,lock,default_id=0) :
@@ -296,12 +296,13 @@ def listener(data) :
 		l_turn.run()
 		
 if __name__ == "__main__":
-	d = Dynamixel(lock=20)
-	d.angleWrite(20,65)
+	# d = Dynamixel(lock=20)
+	# d.angleWrite(20,65)
 	
-	balance.run()
+	# balance.run()
 	raw_input("Proceed?")
 
+        print os.getcwd()
         # bd = BlueDot()
         # bd.when_pressed = dpad
         # bd.when_moved = dpad
