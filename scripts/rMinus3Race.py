@@ -22,7 +22,7 @@ hand = {5: 60, 6: -60}
 #---------------------------------------------------------------------------------------------------------------------------------------------------
 
 path = os.path.dirname(os.getcwd()) + "/catkin_ws/src/dash_ros/inc/super.json"
-
+pathback = os.path.dirname(os.getcwd()) + "/catkin_ws/src/dash_ros/inc/Backwalking.json"
 class Dynamixel(object) :
 	def __init__(self,lock,default_id=0) :
 		global dxl
@@ -242,6 +242,7 @@ class Custom(object) :
 		
 #--------------------------------------------------------------MOTIONS--------------------------------------------------------------------------------
 json = JSON(path)
+jsonb = JSON(pathback)
 balance = Motionset(json.parse(motion="2 Balance"),offset=[darwin,hand])
 w1 = Motionset(json.parse(motion="32 F_S_L"),speed=2.1,offset=[darwin])
 w2 = Motionset(json.parse(motion="33 "),speed=2.1,offset=[darwin])
@@ -249,9 +250,15 @@ w3 = Motionset(json.parse(motion="38 F_M_R"),speed=2.7,offset=[darwin,darwin1])
 w4 = Motionset(json.parse(motion="39 "),speed=2.1,offset=[darwin,darwin1])
 w5 = Motionset(json.parse(motion="36 F_M_L"),speed=2.7,offset=[darwin,darwin1])
 w6 = Motionset(json.parse(motion="37 "),speed=2.1,offset=[darwin,darwin1])
+w1b = Motionset(jsonb.parse(motion="32 F_S_L"),speed=2.1,offset=[darwin])
+w2b = Motionset(jsonb.parse(motion="33 "),speed=2.1,offset=[darwin])
+w3b = Motionset(jsonb.parse(motion="38 F_M_R"),speed=2.7,offset=[darwin,darwin1])
+w4b = Motionset(jsonb.parse(motion="39 "),speed=2.1,offset=[darwin,darwin1])
+w5b = Motionset(jsonb.parse(motion="36 F_M_L"),speed=2.7,offset=[darwin,darwin1])
+w6b = Motionset(jsonb.parse(motion="37 "),speed=2.1,offset=[darwin,darwin1])
 back_left = Motionset(json.parse(motion="17 B_R_E"),speed=1,offset=[darwin])
 back_right = Motionset(json.parse(motion="18 B_L_E"),speed=1,offset=[darwin])
-back_walk = Custom(json.setparse(motion="11 B_L_S",offset=[darwin]))
+back_walk = Custom(motionset=[w3b,w4b,w5b,w6b])
 walk_init = Custom(motionset=[w1,w2])
 walk_motion = Custom(motionset=[w3,w4,w5,w6])				
 fast_left = Motionset(json.parse(motion="9 ff_r_l"),speed=1.5,offset=[darwin,abmath,darwin1])
