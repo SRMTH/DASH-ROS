@@ -5,8 +5,6 @@ import itertools
 import numpy as np
 import json
 import xml.etree.ElementTree as ET
-from signal import pause
-from bluedot import BlueDot
 import rospy
 from std_msgs.msg import String
 import dynamixel
@@ -268,26 +266,6 @@ r_turn = Motionset(json.parse(motion="27 RT"),speed=1.2,offset=[darwin])
 l_turn = Motionset(json.parse(motion="28 LT"),speed=1.2,offset=[darwin])
 #-----------------------------------------------------------------------------------------------------------------------------------------------------
 
-speed = 0.2
-def dpad(pos) :
-    global speed
-    if pos.top :
-        t = 10
-        while(t):
-                fast_walk.run(speed)
-                if speed<1.5 :
-                        speed = speed + 0.3
-                t -= 1
-        command = "Forward"
-    elif pos.bottom :
-            pass
-    elif pos.left :
-            l_turn.run()
-    elif pos.right :
-            r_turn.run()
-    elif pos.middle :
-            balance.run()
-
 
 def listener(data) :
         rospy.loginfo(rospy.get_caller_id() + 'I heard %s', data.data)
@@ -303,17 +281,12 @@ def listener(data) :
 		l_turn.run()
 		
 if __name__ == "__main__":
-	# d = Dynamixel(lock=20)
-	# d.angleWrite(20,65)
+        d = Dynamixel(lock=20)
+        d.angleWrite(20,65)
 	
-	# balance.run()
+        balance.run()
 	raw_input("Proceed?")
 
-        print os.getcwd()
-        # bd = BlueDot()
-        # bd.when_pressed = dpad
-        # bd.when_moved = dpad
-        # pause()
         rospy.init_node('Dash', anonymous=True)
         rospy.Subscriber('get_area',String,listener,queue_size=10)
         rospy.spin()
