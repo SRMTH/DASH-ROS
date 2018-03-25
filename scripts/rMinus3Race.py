@@ -22,7 +22,7 @@ hand = {5: 60, 6: -60}
 rp = rospkg.RosPack()
 package_path = rp.get_path("dash_ros")
 path = os.path.join(package_path, "inc", "super.json")
-pathback = os.path.join(package_path, "inc", "back.json") 
+pathback = os.path.join(package_path, "inc", "Backwalking.json") 
 class Dynamixel(object) :
 	def __init__(self,lock,default_id=0) :
 		global dxl
@@ -270,26 +270,26 @@ l_turn = Motionset(jsonf.parse(motion="28 LT"),speed=1.2,offset=[darwin])
 
 
 def listener(data) :
-        rospy.loginfo(rospy.get_caller_id() + 'I heard %s', data.data)
-        print data.data
-        print "aavd"
-	if data.data == "forward":
-		walk_motion.run()
-	elif data.data == "backward" :
-		back_walk.run()
-	elif data.data == "right" :
-		r_turn.run()
-	elif data.data == "left" :
-		l_turn.run()
-		
+    rospy.loginfo(rospy.get_caller_id() + 'I heard %s', data.data)
+    print data.data
+    print "aavd"
+    if data.data == "forward":
+            walk_motion.run()
+    elif data.data == "backward" :
+            back_walk.run()
+    elif data.data == "right" :
+            r_turn.run()
+    elif data.data == "left" :
+            l_turn.run()
+            
 if __name__ == "__main__":
-        # d = Dynamixel(lock=20)
-        # d.angleWrite(20,65)
-	
-        # balance.run()
-	# raw_input("Proceed?")
+    # d = Dynamixel(lock=20)
+    # d.angleWrite(20,65)
+    
+    # balance.run()
+    # raw_input("Proceed?")
 
-        rospy.init_node('Dash', anonymous=True)
-        rospy.Subscriber('get_area',String,listener,queue_size=10)
-        rospy.spin()
+    rospy.init_node('Dash', anonymous=True)
+    rospy.Subscriber('get_area',String,listener,queue_size=10)
+    rospy.spin()
 	
