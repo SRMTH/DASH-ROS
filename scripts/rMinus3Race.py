@@ -22,7 +22,7 @@ hand = {5: 60, 6: -60}
 rp = rospkg.RosPack()
 package_path = rp.get_path("dash_ros")
 path = os.path.join(package_path, "inc", "super.json")
-pathback = os.path.join(package_path, "inc", "Backwalking.json") 
+#pathback = os.path.join(package_path, "inc", "Backwalking.json") 
 class Dynamixel(object) :
 	def __init__(self,lock,default_id=0) :
 		global dxl
@@ -236,59 +236,88 @@ class Custom(object) :
 		for motionset in self.motionset :
 			if not(spd) :
 				speed = motionset.speed
-  
+
 			motionset.run(speed)
 
 		
 #--------------------------------------------------------------MOTIONS--------------------------------------------------------------------------------
-jsonf = JSON(path)
-balance = Motionset(jsonf.parse(motion="2 Balance"),offset=[darwin,hand])
-w1 = Motionset(jsonf.parse(motion="32 F_S_L"),speed=2.1,offset=[darwin])
-w2 = Motionset(jsonf.parse(motion="33 "),speed=2.1,offset=[darwin])
-w3 = Motionset(jsonf.parse(motion="38 F_M_R"),speed=2.7,offset=[darwin,darwin1])
-w4 = Motionset(jsonf.parse(motion="39 "),speed=2.1,offset=[darwin,darwin1])
-w5 = Motionset(jsonf.parse(motion="36 F_M_L"),speed=2.7,offset=[darwin,darwin1])
-w6 = Motionset(jsonf.parse(motion="37 "),speed=2.1,offset=[darwin,darwin1])
-w1b = Motionset(jsonf.parse(motion="32 F_S_L"),speed=2.1,offset=[darwin])
-w2b = Motionset(jsonf.parse(motion="33 "),speed=2.1,offset=[darwin])
-w3b = Motionset(jsonf.parse(motion="13 B_R_M"),speed=2,offset=[darwin])
-w4b = Motionset(jsonf.parse(motion="14 B_L_s "),speed=2,offset=[darwin])
-w5b = Motionset(jsonf.parse(motion="15 B_R_M"),speed=2.1,offset=[darwin])
-w6b = Motionset(jsonf.parse(motion="16 B_L_M "),speed=2.1,offset=[darwin])
-back_left = Motionset(jsonf.parse(motion="17 B_R_E"),speed=1,offset=[darwin])
-back_right = Motionset(jsonf.parse(motion="18 B_L_E"),speed=1,offset=[darwin])
+json = JSON(path)
+balance = Motionset(json.parse(motion="152 Balance"),offset=[darwin,hand])
+w1 = Motionset(json.parse(motion="32 F_S_L"),speed=2.1,offset=[darwin])
+w2 = Motionset(json.parse(motion="33 "),speed=2.1,offset=[darwin])
+w3 = Motionset(json.parse(motion="38 F_M_R"),speed=2.7,offset=[darwin])
+w4 = Motionset(json.parse(motion="39 "),speed=2.1,offset=[darwin])
+w5 = Motionset(json.parse(motion="36 F_M_L"),speed=2.7,offset=[darwin])
+w6 = Motionset(json.parse(motion="37 "),speed=2.1,offset=[darwin])
+
+walk = Custom(json.setparse("22 F_S_L",offset=[darwin]))
+
+w1b = Motionset(json.parse(motion="32 F_S_L"),speed=2.1,offset=[darwin])
+w2b = Motionset(json.parse(motion="33 "),speed=2.1,offset=[darwin])
+w3b = Motionset(json.parse(motion="13 B_R_M"),speed=2,offset=[darwin])
+w4b = Motionset(json.parse(motion="14 B_L_s "),speed=2,offset=[darwin])
+w5b = Motionset(json.parse(motion="15 B_R_M"),speed=2.1,offset=[darwin])
+w6b = Motionset(json.parse(motion="16 B_L_M "),speed=2.1,offset=[darwin])
+
+back_left = Motionset(json.parse(motion="17 B_R_E"),speed=1,offset=[darwin])
+back_right = Motionset(json.parse(motion="18 B_L_E"),speed=1,offset=[darwin])
+
 back_walk = Custom(motionset=[w3b,w4b,w5b,w6b])
+
+
 walk_init = Custom(motionset=[w1,w2])
 walk_motion = Custom(motionset=[w3,w4,w5,w6])				
-fast_left = Motionset(jsonf.parse(motion="9 ff_r_l"),speed=1.5,offset=[darwin,abmath,darwin1])
-fast_right = Motionset(jsonf.parse(motion="10 ff_l_r"),speed=1.5,offset=[darwin,abmath,darwin1])
+fast_left = Motionset(json.parse(motion="9 ff_r_l"),speed=1.5,offset=[darwin,abmath,darwin1])
+fast_right = Motionset(json.parse(motion="10 ff_l_r"),speed=1.5,offset=[darwin,abmath,darwin1])
 fast_walk = Custom(motionset=[fast_left,fast_right])
-r_turn = Motionset(jsonf.parse(motion="27 RT"),speed=1.2,offset=[darwin])
-l_turn = Motionset(jsonf.parse(motion="28 LT"),speed=1.2,offset=[darwin])
+r_turn = Motionset(json.parse(motion="27 RT"),speed=1.2,offset=[darwin])
+l_turn = Motionset(json.parse(motion="28 LT"),speed=1.2,offset=[darwin])
+
+left_side_step = Custom(json.setparse("21 Fst_L",offset=[darwin, hand]))
+right_side_step = Custom(json.setparse("20 Fst_R",offset=[darwin, hand]))
+
+l_step = Custom(json.setparse("24 F_E_L",offset=[darwin, hand]))
+r_step = Custom(json.setparse("25 F_E_R",offset=[darwin, hand]))
+
+kick = Custom(json.setparse("26 F_PShoot_R",offset = [darwin, hand]))
+rskick = Motionset(json.parse("39 Pass_R"),speed=1.5, offset=[darwin])
 #-----------------------------------------------------------------------------------------------------------------------------------------------------
 
-
+state  = 0
 def listener(data) :
-    rospy.loginfo(rospy.get_caller_id() + 'I heard %s', data.data)
-    print data.data
-    print "aavd"
-    if data.data == "forward":
-            walk_motion.run()
-    elif data.data == "backward" :
-            back_walk.run()
-    elif data.data == "right" :
-            r_turn.run()
-    elif data.data == "left" :
-            l_turn.run()
-            
-if __name__ == "__main__":
-    # d = Dynamixel(lock=20)
-    # d.angleWrite(20,65)
-    
-    # balance.run()
-    # raw_input("Proceed?")
+	global state	
+	rospy.loginfo(rospy.get_caller_id() + 'I heard %s', data.data)
+	#print data.data
 
-    rospy.init_node('Dash', anonymous=True)
-    rospy.Subscriber('get_area',String,listener,queue_size=10)
-    rospy.spin()
-	
+	if data.data == "forward":
+		fast_walk.run()
+		time.sleep(0.01)
+	elif data.data == "backward" :
+		back_walk.run()
+		state = 1
+		time.sleep(0.01)
+	elif data.data == "right" :
+		if state == 0:
+			r_turn.run()
+			time.sleep(0.1)
+		else:
+			l_turn.run()
+			time.sleep(0.1)
+	elif data.data == "left" :
+		if state == 0:
+			l_turn.run()
+			time.sleep(0.1)
+		else:
+			r_turn.run()
+			time.sleep(0.1)	
+if __name__ == "__main__":
+	d = Dynamixel(lock=20)
+	d.angleWrite(20,65)
+
+	balance.run()
+	raw_input("Proceed?")
+
+	rospy.init_node('Dash', anonymous=True)
+	rospy.Subscriber('get_area',String,listener,queue_size=10)
+	rospy.spin()
+
